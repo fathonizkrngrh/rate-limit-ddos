@@ -1,13 +1,11 @@
 {
-  "name": "angkasa-api",
+  "name": "pki-9-api",
   "version": "1.0.0",
-  "description": "Binar Final Project - E-Ticket Angkasa API",
+  "description": "Tugas UAS Penjaminan Keamanan Informasi",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon src/index.js",
-    "start": "node src/index.js",
-    "sq:cms": "npx sequelize-cli db:migrate:undo:all && sequelize-cli db:migrate && sequelize-cli db:seed:all"
+    "start": "node src/index.js"
   },
   "author": "Kelompok 8",
   "license": "ISC",
@@ -23,7 +21,8 @@
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.29.4",
     "pg": "^8.8.0",
-    "sequelize": "^6.23.1"
+    "sequelize": "^6.23.1",
+    "shelljs": "^0.8.5"
   },
   "devDependencies": {
     "morgan": "^1.10.0"

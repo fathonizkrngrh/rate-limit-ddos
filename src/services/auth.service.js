@@ -1,4 +1,5 @@
-const { User } = require("../models");
+const models = require("../models");
+const tUser = models.users;
 const { StatusCodes: status } = require("http-status-codes");
 const { apiResponse, apiBadRequestResponse } = require("../utils/apiResponse.utils");
 const { hashPassword, checkPassword } = require("../utils/bcrypt.utils");
@@ -9,9 +10,16 @@ module.exports = {
     try {
       const { fullname, username, email, phone, password } = req.body;
 
+      let requiredAttr = { fullname: "Fullname", username: "Username", email: "Email", phone: "Phone", password: "Password"} 
+      for (const key of Object.keys(requiredAttr)) {
+          if (!req.body[key]) {
+            return apiBadRequestResponse(`Permintaan tidak lengkap. ${requiredAttr[key]} dari Akun Pelaporr Sertifikat wajib diisi.`);
+          }
+      }
+
       const hashed = await hashPassword(password);
 
-      await User.create({
+      await tUser.create({
         fullname,
         username,
         email,
@@ -33,7 +41,14 @@ module.exports = {
     try {
       const { email, password } = req.body;
 
-      const user = await User.findOne({ raw: true, where: { email: email, deleted: 0},});
+      let requiredAttr = { email: "Email", password: "Password"} 
+      for (const key of Object.keys(requiredAttr)) {
+          if (!req.body[key]) {
+            return apiBadRequestResponse(`Permintaan tidak lengkap. ${requiredAttr[key]} dari Akun Pelaporr Sertifikat wajib diisi.`);
+          }
+      }
+
+      const user = await tUser.findOne({ raw: true, where: { email: email, deleted: 0},});
       if (!user) {
         return apiBadRequestResponse("Email does not registered");
       }
@@ -59,11 +74,11 @@ module.exports = {
     try {
       const { id } = req.user;
 
-      const user = await User.findOne({ raw: true, where: { id: id, deleted: 0 } });
+      const user = await tUser.findOne({ raw: true, where: { id: id, deleted: 0 } });
       if (!user)
         throw apiBadRequestResponse("User not found");
 
-      return apiResponse(status.OK, "OK", "Success get authenticated user", { user });
+      return apiResponse(status.OK, "OK", "Success get authenticated user", user);
     } catch (e) {
       throw apiResponse(
         e.code || status.INTERNAL_SERVER_ERROR,
